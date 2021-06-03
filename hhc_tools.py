@@ -363,3 +363,13 @@ def date_2_plan_file(start_date,end_date,plan_file):
         for i,line in enumerate(new_lines):  
             f.writelines(line)
     f.close()
+
+def find_u_file(plan_file):
+    with open(plan_file, "r") as f:
+        lines=f.readlines()
+    f.close()
+    for line in lines:
+        if ("Flow File" in line):
+            u=line[-4:-1]
+    flow_path=glob.glob('\\'.join(plan_file.split("\\")[:-1])+'\\*'+u)
+    return flow_path[0]
