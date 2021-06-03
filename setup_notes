@@ -1,3 +1,5 @@
+#navigate to the hhc_tools directory and setup the following environment and packages.
+
 conda create -n "hhc_tools" python=3.9 ipython;
 conda activate hhc_tools;
 conda install jupyter;
@@ -13,4 +15,6 @@ conda install -c conda-forge xarray;
 conda install -c conda-forge cfgrib;
 conda install -c conda-forge h5netcdf
 conda install -c menpo wget
-git clone https://github.com/mikebannis/rascontrol.git; cd rascontrol; pip install .
+git clone https://github.com/mikebannis/rascontrol.git; 
+cd rascontrol; 
+pip install .
