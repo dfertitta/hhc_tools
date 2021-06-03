@@ -1,0 +1,129 @@
+Flow Title=
+Program Version=6.00
+Use Restart= 0 
+Initial Storage Elev=test            ,0
+Boundary Location=                ,                ,        ,        ,                ,test            ,                ,inflow                          
+Interval=1HOUR
+Flow Hydrograph=192
+150000.0149000.0149000.0150000.0150000.0150000.0150000.0151000.0151000.0151000.0
+150000.0150000.0151000.0151000.0151000.0152000.0151000.0151000.0151000.0152000.0
+152000.0152000.0152000.0152000.0151000.0152000.0152000.0151000.0152000.0152000.0
+152000.0152000.0152000.0152000.0152000.0152000.0152000.0153000.0152000.0153000.0
+153000.0153000.0153000.0153000.0153000.0154000.0154000.0154000.0154000.0154000.0
+155000.0155000.0154000.0154000.0154000.0154000.0155000.0154000.0155000.0155000.0
+155000.0155000.0155000.0155000.0155000.0156000.0156000.0156000.0157000.0157000.0
+157000.0157000.0157000.0157000.0157000.0158000.0158000.0158000.0158000.0158000.0
+159000.0158000.0159000.0159000.0159000.0159000.0159000.0159000.0159000.0159000.0
+160000.0159000.0160000.0160000.0161000.0161000.0161000.0161000.0161000.0161000.0
+162000.0162000.0162000.0162000.0162000.0162000.0163000.0163000.0163000.0163000.0
+163000.0163000.0163000.0164000.0164000.0164000.0164000.0164000.0164000.0165000.0
+165000.0165000.0165000.0165000.0165000.0165000.0165000.0166000.0165000.0166000.0
+165000.0165000.0166000.0166000.0166000.0165000.0166000.0166000.0166000.0166000.0
+166000.0166000.0166000.0167000.0167000.0167000.0167000.0167000.0167000.0167000.0
+167000.0167000.0167000.0167000.0167000.0167000.0167000.0167000.0167000.0167000.0
+168000.0167000.0168000.0168000.0168000.0168000.0168000.0168000.0168000.0168000.0
+168000.0168000.0168000.0168000.0168000.0169000.0168000.0169000.0169000.0169000.0
+169000.0169000.0169000.0169000.0169000.0169000.0169000.0169000.0169000.0169000.0
+169000.0170000.0
+Stage Hydrograph TW Check=0
+Flow Hydrograph Slope= 0.0001 
+DSS Path=
+Use DSS=False
+Use Fixed Start Time=False
+Fixed Start Date/Time=,
+Is Critical Boundary=False
+Critical Boundary Flow=
+Boundary Location=                ,                ,        ,        ,                ,test            ,                ,outflow                         
+Interval=1HOUR
+Stage Hydrograph=241
+   1.923   1.972   1.982   1.995   2.008   2.054   2.093   2.123   2.119    2.11
+   2.096   2.103   2.119    2.11   2.057   1.991   1.936   1.929   1.982   1.991
+   1.972   1.909   1.877   1.903   1.962   1.975   1.949   1.916    1.89   1.867
+    1.86   1.906   1.969   1.998   1.969     1.9    1.88   1.903   1.962   1.978
+   1.969   1.929   1.936   1.959   1.982   1.982   1.942   1.896   1.886   1.929
+   1.939   1.978   1.969   1.916    1.86   1.814   1.791   1.768   1.732   1.703
+   1.726   1.791   1.772   1.709   1.663   1.637   1.631   1.621   1.631   1.611
+   1.591   1.565   1.509    1.47   1.457   1.463   1.552   1.572   1.509    1.43
+   1.375   1.368   1.407   1.398   1.335   1.286    1.25   1.191   1.155   1.102
+   1.066   1.043    1.01   0.971   0.919   0.909   0.912   0.863   0.791   0.755
+   0.715   0.656    0.61   0.584   0.574   0.558   0.577   0.594   0.594   0.646
+   0.732   0.801   0.843   0.889   0.925   1.001   1.073   1.142   1.201   1.158
+   1.142   1.129   1.125   1.132   1.129   1.122   1.083    1.04   1.004   0.961
+   0.906   0.827   0.771   0.712   0.643   0.581   0.528   0.466   0.397   0.341
+   0.302   0.259   0.217   0.174   0.131   0.072   0.033    0.01  -0.023  -0.059
+  -0.089  -0.118  -0.144  -0.184   -0.21   -0.24  -0.279  -0.312  -0.344  -0.361
+  -0.387  -0.413  -0.433  -0.459  -0.469  -0.495  -0.525  -0.548  -0.551  -0.577
+  -0.577  -0.587  -0.587  -0.594    -0.6  -0.597  -0.587  -0.571  -0.561  -0.541
+  -0.522  -0.512  -0.495  -0.512  -0.505  -0.518  -0.545  -0.564  -0.571  -0.574
+  -0.594  -0.607  -0.614   -0.64  -0.656  -0.676  -0.679  -0.699  -0.699  -0.702
+  -0.722  -0.732  -0.738  -0.735  -0.732  -0.741  -0.735  -0.715  -0.696  -0.669
+  -0.633  -0.581  -0.531  -0.479  -0.394  -0.308  -0.249  -0.157  -0.092  -0.033
+   0.007   0.043   0.089   0.135   0.174    0.21   0.249   0.295   0.344   0.417
+   0.505   0.568    0.62   0.673   0.702   0.751   0.787   0.804   0.856   0.883
+   0.919
+Stage Hydrograph Use Initial Stage=-1
+Stage Hydrograph TW Check=0
+DSS Path=
+Use DSS=False
+Use Fixed Start Time=False
+Fixed Start Date/Time=,
+Is Critical Boundary=False
+Critical Boundary Flow=
+Met Point Raster Parameters=,,,,
+Precipitation Mode=Disable
+Wind Mode=No Wind Forces
+Air Density Mode=
+Met BC=Precipitation|Expanded View=0
+Met BC=Precipitation|Point Interpolation=Nearest
+Met BC=Precipitation|Gridded Source=DSS
+Met BC=Evapotranspiration|Expanded View=0
+Met BC=Evapotranspiration|Point Interpolation=Nearest
+Met BC=Evapotranspiration|Gridded Source=DSS
+Met BC=Wind Speed|Expanded View=0
+Met BC=Wind Speed|Constant Units=ft/s
+Met BC=Wind Speed|Point Interpolation=Nearest
+Met BC=Wind Speed|Gridded Source=DSS
+Met BC=Wind Direction|Expanded View=0
+Met BC=Wind Direction|Point Interpolation=Nearest
+Met BC=Wind Direction|Gridded Source=DSS
+Met BC=Wind Velocity X|Expanded View=0
+Met BC=Wind Velocity X|Constant Units=ft/s
+Met BC=Wind Velocity X|Point Interpolation=Nearest
+Met BC=Wind Velocity X|Gridded Source=DSS
+Met BC=Wind Velocity Y|Expanded View=0
+Met BC=Wind Velocity Y|Constant Units=ft/s
+Met BC=Wind Velocity Y|Point Interpolation=Nearest
+Met BC=Wind Velocity Y|Gridded Source=DSS
+Met BC=Air Density|Mode=Constant
+Met BC=Air Density|Expanded View=0
+Met BC=Air Density|Constant Value=1.225
+Met BC=Air Density|Point Interpolation=Nearest
+Met BC=Air Density|Gridded Source=DSS
+Met BC=Air Temperature|Expanded View=0
+Met BC=Air Temperature|Point Interpolation=Nearest
+Met BC=Air Temperature|Gridded Source=DSS
+Met BC=Humidity|Expanded View=0
+Met BC=Humidity|Point Interpolation=Nearest
+Met BC=Humidity|Gridded Source=DSS
+Met BC=Air Pressure|Expanded View=0
+Met BC=Air Pressure|Point Interpolation=Nearest
+Met BC=Air Pressure|Gridded Source=DSS
+Non-Newtonian Method= 0 
+Non-Newtonian Constant Vol Conc=0
+Non-Newtonian Yield Method= 0 
+Non-Newtonian Yield Coef=0, 0
+User Yeild=   0
+Non-Newtonian Sed Visc= 0 
+Non-Newtonian Obrian B=0
+User Viscosity=0
+User Viscosity Ratio=0
+Herschel-Bulkley Coef=0, 0
+Clastic Method= 0 
+Coulomb Phi=0
+Voellmy X=0
+Non-Newtonian Hindered FV= 0 
+Non-Newtonian FV K=0
+Non-Newtonian ds=0
+Non-Newtonian Max Cv=0
+Non-Newtonian Bulking Method= 0 
+Non-Newtonian High C Transport= 0 

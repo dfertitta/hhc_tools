@@ -1,0 +1,18 @@
+echo y|conda create -n "hhc_tools" python=3.9 ipython
+echo y|conda activate hhc_tools
+echo y|conda install jupyter
+echo y|conda install numpy
+echo y|conda install scipy
+echo y|conda install ipyleaflet
+echo y|conda install -c conda-forge ipyleaflet
+echo y|conda install -c conda-forge voila
+echo y|conda install matplotlib
+echo y|conda install -c conda-forge bqplot
+echo y|conda install -c conda-forge pygrib
+echo y|conda install -c conda-forge xarray
+echo y|conda install -c conda-forge cfgrib
+echo y|conda install -c conda-forge h5netcdf
+echo y|conda install -c menpo wget
+echo y|git clone https://github.com/mikebannis/rascontrol.git
+echo y|cd rascontrol
+echo y|pip install .

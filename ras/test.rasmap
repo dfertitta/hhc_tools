@@ -1,0 +1,60 @@
+<RASMapper>
+  <Version>2.0.0</Version>
+  <RASProjectionFilename Filename=".\Eq_Albs_USGS.prj" />
+  <Features>
+    <Layer Name="Profile Lines" Type="PolylineFeatureLayer" Filename=".\Features\Profile Lines.shp">
+      <LabelFeatures Checked="True" Center="False" rows="1" cols="1" r0c0="Name" Position="3" Color="-16777216" />
+    </Layer>
+  </Features>
+  <Geometries Expanded="True">
+    <Layer Name="test" Type="RASGeometry" Expanded="True" Filename=".\test.g01.hdf" />
+  </Geometries>
+  <Results Expanded="True" />
+  <MapLayers />
+  <Terrains Checked="True" Expanded="True">
+    <Layer Name="Terrain" Type="TerrainLayer" Checked="True" Filename=".\Terrain\Terrain.hdf">
+      <Symbology>
+        <SurfaceFill Colors="-10039894,-256,-16744448,-23296,-7667712,-5952982,-8355712,-1286" Values="-7727.09375,-72.3625792979747,-23.0228681817304,-6.52265551546816,17.1235053786296,64.6368764015132,183.881717967748,554.9375" Stretched="True" RegenerateForScreen="False" />
+      </Symbology>
+      <Alpha>255</Alpha>
+      <ResampleMethod>near</ResampleMethod>
+      <Surface On="True" />
+    </Layer>
+  </Terrains>
+  <CurrentView>
+    <MaxX>2684127.34708254</MaxX>
+    <MinX>624127.347082544</MinX>
+    <MaxY>3259613.4856474</MaxY>
+    <MinY>2095613.4856474</MinY>
+  </CurrentView>
+  <VelocitySettings>
+    <Density>1.5</Density>
+    <Lifetime>100</Lifetime>
+    <Radius>0.75</Radius>
+    <Method>2</Method>
+    <Timestep>1</Timestep>
+    <StaticColor>Black</StaticColor>
+  </VelocitySettings>
+  <AnimationSettings>
+    <DelayTimer>0</DelayTimer>
+  </AnimationSettings>
+  <Units>US Customary</Units>
+  <RenderMode>hybrid</RenderMode>
+  <MarksWarpMethod>False</MarksWarpMethod>
+  <CurrentSettings>
+    <ProjectSettings>
+      <RiverStationUnits>Feet</RiverStationUnits>
+      <RiverStationDecimalPlaces>0</RiverStationDecimalPlaces>
+      <HorizontalDecimalPlaces>1</HorizontalDecimalPlaces>
+      <VerticalDecimalPlaces>2</VerticalDecimalPlaces>
+      <XSMaxPoints>450</XSMaxPoints>
+      <LSMaxPoints>1000</LSMaxPoints>
+      <MeshTolerance_MinFaceLength>0.05</MeshTolerance_MinFaceLength>
+      <MeshTolerance_EnsureCellPoint>False</MeshTolerance_EnsureCellPoint>
+    </ProjectSettings>
+    <Folders>
+      <TerrainDestinationFolder>.\Terrain</TerrainDestinationFolder>
+      <TerrainSourceFolder>..\ras</TerrainSourceFolder>
+    </Folders>
+  </CurrentSettings>
+</RASMapper>
