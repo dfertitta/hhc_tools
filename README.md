@@ -1,2 +1,2 @@
 # hhc_tools
-Engineering tools for acquisition and processing of data.
+Engineering tools for acquisition and processing of hydraulic data.
