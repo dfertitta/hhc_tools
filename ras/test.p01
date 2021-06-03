@@ -3,7 +3,7 @@ Program Version=5.07
 Short Identifier=Plan p01                                                        
 Simulation Date=01JAN2021,0000,02JAN2021,0000
 Geom File=g01
-Flow File=u03
+Flow File=u01
 Subcritical Flow
 K Sum by GR= 0 
 Std Step Tol= 0.01 

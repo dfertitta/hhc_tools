@@ -10,7 +10,13 @@
     <Layer Name="test" Type="RASGeometry" Expanded="True" Filename=".\test.g01.hdf" />
   </Geometries>
   <Results Expanded="True" />
-  <MapLayers />
+  <MapLayers Checked="True" Expanded="True">
+    <Layer Name="Mannings_n" Type="LandCover" Checked="True" Filename=".\Mannings_n.tif">
+      <Alpha>128</Alpha>
+      <ResampleMethod>near</ResampleMethod>
+      <ColorByteMap Alpha="128" Values="0,5,3,6,4,2,13,15,1,7,12,8,14,9,10,11" Colors="-2147483648,-2145473553,-2145947062,-2135676689,-2133371859,-2142202553,-2137581831,-2144648203,-2139108583,-2141749289,-2137182728,-2133889493,-2143768742,-2132587665,-2144040562,-2131894293" />
+    </Layer>
+  </MapLayers>
   <Terrains Checked="True" Expanded="True">
     <Layer Name="Terrain" Type="TerrainLayer" Checked="True" Filename=".\Terrain\Terrain.hdf">
       <Symbology>
@@ -55,6 +61,7 @@
     <Folders>
       <TerrainDestinationFolder>.\Terrain</TerrainDestinationFolder>
       <TerrainSourceFolder>..\ras</TerrainSourceFolder>
+      <AddDataFolder>..\ras</AddDataFolder>
     </Folders>
   </CurrentSettings>
 </RASMapper>
