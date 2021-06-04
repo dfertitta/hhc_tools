@@ -373,3 +373,13 @@ def find_u_file(plan_file):
             u=line[-4:-1]
     flow_path=glob.glob('\\'.join(plan_file.split("\\")[:-1])+'\\*'+u)
     return flow_path[0]
+
+def BC_list(unsteady_flow_file):
+    f = open(unsteady_flow_file, "r")
+    lines=f.readlines()
+    f.close()
+    BC_list=[]
+    for line in lines:
+        if ("Boundary Location" in line):
+            BC_list.append(line.split()[-1][1:])
+    return BC_list
