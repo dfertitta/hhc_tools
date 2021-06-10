@@ -292,10 +292,12 @@ def flow_gage_2_unsteady_flow_file(gage,unsteady_flow_file,bc_name):
     
     f = open(unsteady_flow_file, "r")
     lines=f.readlines()
+    switch=False
     for number,line in enumerate(lines):
         if ("Boundary Location" in line) and (bc_name in line):
             startline=number+2
-        elif "Stage Hydrograph TW Check" in line:
+            switch=True
+        elif ("Stage Hydrograph TW Check" in line) and (switch==True):
             endline=number
             break
     f.close()
@@ -320,12 +322,14 @@ def stage_gage_2_unsteady_flow_file(gage,unsteady_flow_file,bc_name):
     
     f = open(unsteady_flow_file, "r")
     lines=f.readlines()
+    switch=False
     for number,line in enumerate(lines):
         if ("Boundary Location" in line) and (bc_name in line):
             startline=number+2
-        elif "Stage Hydrograph TW Check" in line:
+            switch=True
+        elif ("Stage Hydrograph TW Check" in line) and (switch==True):
             endline=number-1
-
+            break
     f.close()
     new_lines=[]
     for i,line in enumerate(lines):
