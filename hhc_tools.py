@@ -14,6 +14,11 @@ import xarray
 import matplotlib.pyplot as plt
 import numpy as np
 from decimal import Decimal
+from osgeo import gdal
+import html.parser
+from os import makedirs
+import h5py
+import math
 
 ###################################
 
@@ -387,3 +392,113 @@ def BC_list(unsteady_flow_file):
         if ("Boundary Location" in line):
             BC_list.append(line.split()[-1][1:])
     return BC_list
+
+def extract_2D_RAS(filename):
+
+    f1 = h5py.File(filename,'r+')
+    points=f1['Geometry']['2D Flow Areas']['test']['Cells Center Coordinate'][()]
+    maxSWL=f1['Results']['Unsteady']['Output']['Output Blocks']['Base Output']['Summary Output']['2D Flow Areas']['test']['Maximum Water Surface'][()]
+    cellmin=f1['Geometry']['2D Flow Areas']['test']['Cells Minimum Elevation'][()]
+    f1.close()
+    maxDEP=maxSWL[0]-cellmin
+    xyz=np.concatenate((points,np.array([maxDEP.tolist()]).T),axis=1)
+    xyz_nan=[]
+    for i in xyz:
+        if (math.isnan(i[2])) or (i[2]==0.0):
+            pass
+        else:
+            xyz_nan.append(i.tolist())
+
+    xyz_nan=np.array(xyz_nan)
+    np.savetxt(filename+".xyz",xyz_nan,delimiter=',')
+
+    
+def xyz2tif(filename):
+
+    kwargs_1 = {
+        'format': 'GTiff',
+        'outputType': gdal.GDT_Int16
+    }
+    kwargs_2 = {    
+        'srcSRS': 'ras\Eq_Albs_USGS.prj',
+        'dstSRS': 'EPSG:3857'
+    }
+
+    xyz_file = filename+'.hdf.xyz'
+    tif_file1 = filename+'1.hdf.tif'
+    tif_file2 = filename+'2.hdf.tif'
+
+
+    step_1 = gdal.Translate(tif_file1, 
+                            xyz_file,
+                            **kwargs_1)
+
+    step_1 = None
+
+    step_2 = gdal.Warp(tif_file2,
+                       tif_file1,
+                       **kwargs_2)
+    step_2 = None
+
+def tif2png(filename):
+    kwargs = {
+        'colorFilename': 'cmap.txt',
+        'addAlpha':'True',
+    }
+
+    
+    tif_file2 = filename+'2.hdf.tif'
+    png_file = filename+'.hdf.png'
+    step_3 = gdal.DEMProcessing(png_file,
+                                tif_file2,
+                                "color-relief",
+                                **kwargs)
+
+    step_3 = None
+
+def href_list(url):
+    link_list=[]
+    with urlopen(url) as website:
+        for i in str(website.read()).split():
+            if 'href' in i:
+                if i.split('"')[1] == '../':
+                    pass
+                else:
+                    link_list.append(i.split('"')[1][:-1])
+    website.close()
+    return link_list
+
+def retrieve_recent_advisory_LSU(year,event,mesh):
+    loni=False
+    for adv in reversed(href_list("https://fortytwo.cct.lsu.edu/thredds/fileServer/"+year+"/"+event+"/")):
+        if mesh in href_list("https://fortytwo.cct.lsu.edu/thredds/fileServer/"+year+"/"+event+"/"+adv):
+            try:
+                sim=href_list("https://fortytwo.cct.lsu.edu/thredds/fileServer/"+year+"/"+event+"/"+adv+"/"+mesh+"/supermic.hpc.lsu.edu/")
+                tracks=href_list("https://fortytwo.cct.lsu.edu/thredds/fileServer/"+year+"/"+event+"/"+adv+"/"+mesh+"/supermic.hpc.lsu.edu/"+sim[0]+"/")
+                break
+            except:
+                print ("no supermic.hpc.lsu.edu run, trying loni")
+                try:
+                    sim=href_list("https://fortytwo.cct.lsu.edu/thredds/fileServer/"+year+"/"+event+"/"+adv+"/"+mesh+"/qbc.loni.org/")
+                    tracks=href_list("https://fortytwo.cct.lsu.edu/thredds/fileServer/"+year+"/"+event+"/"+adv+"/"+mesh+"/qbc.loni.org/"+sim[0]+"/")
+                    loni=True
+                    break
+                except:
+                    pass
+        else:
+            pass
+    for track in tracks:
+        if loni == False:
+            files_path="https://fortytwo.cct.lsu.edu/thredds/fileServer/"+year+"/"+event+"/"+adv+"/"+mesh+"/supermic.hpc.lsu.edu/"+sim[0]+"/"+track
+        else:
+            files_path="https://fortytwo.cct.lsu.edu/thredds/fileServer/"+year+"/"+event+"/"+adv+"/"+mesh+"/qbc.loni.org/"+sim[0]+"/"+track            
+        print(files_path)
+        makedirs("./surge/"+year+"/"+event+"/"+adv+"/"+track+"/", exist_ok=True)    
+
+        try:
+            urllib.request.urlretrieve(files_path+"/maxele.63.nc","surge/"+year+"/"+event+"/"+adv+"/"+track+"/maxele.63.nc")
+            urllib.request.urlretrieve(files_path+"/fort.74.nc","surge/"+year+"/"+event+"/"+adv+"/"+track+"/fort.74.nc")
+            urllib.request.urlretrieve(files_path+"/fort.63.nc","surge/"+year+"/"+event+"/"+adv+"/"+track+"/fort.63.nc")
+        except:
+            print("could not retrieve data from")
+
