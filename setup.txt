@@ -15,7 +15,7 @@ echo y|conda install -c conda-forge xarray
 echo y|conda install -c conda-forge cfgrib
 echo y|conda install -c conda-forge h5netcdf
 echo y|conda install -c conda-forge progressbar
-
+echo y|conda install -c conda-forge netcdf4
 echo y|conda install -c menpo wget
 git clone https://github.com/mikebannis/rascontrol.git
 cd rascontrol
