@@ -21,7 +21,9 @@ import h5py
 import math
 import progressbar
 import xml.etree.ElementTree as ET
-
+import netCDF4 as nc
+from scipy import spatial
+import datetime
 
 ###################################
 
@@ -547,6 +549,31 @@ def retrieve_recent_advisory_LSU(year,event,mesh,files=["maxele.63.nc"]):
                 urllib.request.urlretrieve(files_path+"/"+file,"surge/"+year+"/"+event+"/"+adv+"/"+track+"/"+file,show_progress)
             except:
                 print("could not retrieve data for "+file)
+    return "surge/"+year+"/"+event+"/"+adv+"/"+track+"/"
 
 def stage_2_flow_rating(stage,polynomial_coefficents):
     return np.round(polynomial_coefficents[0]*stage**2+polynomial_coefficents[1]*stage+polynomial_coefficents[2],2)
+
+
+def construct_adcirc_date(base_date,time_stamps_from_nc):
+    converted_ts=[]
+    for time_stamp in time_stamps_from_nc:
+        converted_ts.append((base_date+datetime.timedelta(seconds=time_stamp)).strftime('%Y-%m-%d %H:%M:%S'))
+        
+    return converted_ts
+
+def get_adcirc_time_series(latitude,longitude,fort_63_path,units='ft'):
+    fn = fort_63_path
+    ds = nc.Dataset(fn)
+    nodes = [list(a) for a in zip(ds['y'][:],ds['x'][:])]
+    pt=[latitude,longitude]
+    node_index=spatial.KDTree(nodes).query(pt)[1]
+    time=ds['time'][:].tolist()
+    zeta_time=ds['zeta'][:].data[:,node_index].tolist()
+    if units == 'ft':
+        zeta_time=ds['zeta'][:].data[:,node_index]*3.2808
+        zeta_time=zeta_time.tolist()
+    else:
+        zeta_time=ds['zeta'][:].data[:,node_index].tolist()
+    new_time=construct_adcirc_date(datetime.datetime.strptime(ds['time'].base_date, '%Y-%m-%d %H:%M:%S'),time)
+    return new_time, zeta_time
