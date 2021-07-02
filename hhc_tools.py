@@ -19,6 +19,9 @@ import html.parser
 from os import makedirs
 import h5py
 import math
+import progressbar
+import xml.etree.ElementTree as ET
+
 
 ###################################
 
@@ -69,9 +72,38 @@ def USGS_gage_data_request(begin_date,end_date,site_no):
             except:
                 pass
     np.savetxt("gage_data/"+site_no+".csv", np.c_[dlist_usgs,vlist_usgs], fmt="%s,%s")
-    return dlist_usgs, vlist_usgs
-    
 
+    return dlist_usgs, vlist_usgs
+
+def USACE_gage_data_request(begin_date, end_date, site_no,rating_curve, variable="HG"):
+    """downloads and processes xml data into time series"""
+    USACE_xml=urlopen("https://rivergages.mvr.usace.army.mil/watercontrol/webservices/rest/webserviceWaterML.cfc?meth=getValues&site="+site_no+"&location="+site_no+"&&variable="+variable+"&beginDate="+begin_date+"0:00&endDate="+end_date+"0:00&authToken=RiverGages&method=RGWML") 
+    root = ET.parse(USACE_xml).getroot()
+    dlist_usace=[]
+    vlist_usace=[]
+    for value in root[1][2][:]:
+        dlist_usace.append(value.attrib["dateTime"][:-6])
+        vlist_usace.append(stage_2_flow_rating(float(value.text),rating_curve))
+
+    np.savetxt("gage_data/"+site_no+".csv", np.c_[dlist_usace,vlist_usace], fmt="%s,%s")
+
+    return dlist_usace, vlist_usace
+
+def NWS_gage_data_request_forecast(site_name,site_no,rating_curve):
+    """only forecasted stages are provided, we are converting them to flows here with our own rating curves"""
+    nws_xml=urlopen("https://water.weather.gov/ahps2/hydrograph_to_xml.php?gage="+site_name+"&output=xml&time_zone=cdt") 
+    root = ET.parse(nws_xml).getroot()
+    dlist_nws_forecast=[]
+    vlist_nws_forecast=[]
+    for type_tag in root.findall('forecast/datum'):
+        dlist_nws_forecast.append(type_tag.find('valid').text[:-15]+" "+type_tag.find('valid').text[-14:-12]+":00")
+        vlist_nws_forecast.append(stage_2_flow_rating(float(type_tag.find('primary').text),rating_curve))
+
+    np.savetxt("gage_data/"+site_no+"_forecast.csv", np.c_[dlist_nws_forecast,vlist_nws_forecast], fmt="%s,%s")
+
+    return dlist_nws_forecast, vlist_nws_forecast
+
+        
 def csvParseToLists(csvFile):
     dList = []
     vList = []
@@ -468,7 +500,21 @@ def href_list(url):
     website.close()
     return link_list
 
-def retrieve_recent_advisory_LSU(year,event,mesh):
+def show_progress(block_num, block_size, total_size):
+    global pbar
+    if pbar is None:
+        pbar = progressbar.ProgressBar(maxval=total_size)
+        pbar.start()
+
+    downloaded = block_num * block_size
+    if downloaded < total_size:
+        pbar.update(downloaded)
+    else:
+        pbar.finish()
+        pbar = None
+
+def retrieve_recent_advisory_LSU(year,event,mesh,files=["maxele.63.nc"]):
+    global pbar
     loni=False
     for adv in reversed(href_list("https://fortytwo.cct.lsu.edu/thredds/fileServer/"+year+"/"+event+"/")):
         if mesh in href_list("https://fortytwo.cct.lsu.edu/thredds/fileServer/"+year+"/"+event+"/"+adv):
@@ -477,7 +523,7 @@ def retrieve_recent_advisory_LSU(year,event,mesh):
                 tracks=href_list("https://fortytwo.cct.lsu.edu/thredds/fileServer/"+year+"/"+event+"/"+adv+"/"+mesh+"/supermic.hpc.lsu.edu/"+sim[0]+"/")
                 break
             except:
-                print ("no supermic.hpc.lsu.edu run, trying loni")
+                print ("no supermic.hpc.lsu.edu run, try loni")
                 try:
                     sim=href_list("https://fortytwo.cct.lsu.edu/thredds/fileServer/"+year+"/"+event+"/"+adv+"/"+mesh+"/qbc.loni.org/")
                     tracks=href_list("https://fortytwo.cct.lsu.edu/thredds/fileServer/"+year+"/"+event+"/"+adv+"/"+mesh+"/qbc.loni.org/"+sim[0]+"/")
@@ -494,11 +540,13 @@ def retrieve_recent_advisory_LSU(year,event,mesh):
             files_path="https://fortytwo.cct.lsu.edu/thredds/fileServer/"+year+"/"+event+"/"+adv+"/"+mesh+"/qbc.loni.org/"+sim[0]+"/"+track            
         print(files_path)
         makedirs("./surge/"+year+"/"+event+"/"+adv+"/"+track+"/", exist_ok=True)    
+        for file in files:
+            try:
+                print("downloading "+file)
+                pbar = None
+                urllib.request.urlretrieve(files_path+"/"+file,"surge/"+year+"/"+event+"/"+adv+"/"+track+"/"+file,show_progress)
+            except:
+                print("could not retrieve data for "+file)
 
-        try:
-            urllib.request.urlretrieve(files_path+"/maxele.63.nc","surge/"+year+"/"+event+"/"+adv+"/"+track+"/maxele.63.nc")
-            urllib.request.urlretrieve(files_path+"/fort.74.nc","surge/"+year+"/"+event+"/"+adv+"/"+track+"/fort.74.nc")
-            urllib.request.urlretrieve(files_path+"/fort.63.nc","surge/"+year+"/"+event+"/"+adv+"/"+track+"/fort.63.nc")
-        except:
-            print("could not retrieve data from")
-
+def stage_2_flow_rating(stage,polynomial_coefficents):
+    return np.round(polynomial_coefficents[0]*stage**2+polynomial_coefficents[1]*stage+polynomial_coefficents[2],2)
