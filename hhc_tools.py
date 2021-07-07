@@ -211,13 +211,16 @@ def QPE_unzip(interval=None,destination='precip/qpe/'):
     filenames = [x+".gz" for x in filenames if "gz" not in x]
     filenames = list(set(zipped_filenames)^set(filenames))
     for i in filenames:
-        shutil.copyfile(destination+'gz/'+i, destination+'../temp/'+i)
-        with gzip.open(destination+'../temp/'+i, 'rb') as f_in:
-            with open(destination+'grib/'+i[:-3], 'wb') as f_out:
-                shutil.copyfileobj(f_in, f_out)
-            f_out.close()
-        f_in.close()
-        os.remove(destination+'../temp/'+i)
+        try:
+            shutil.copyfile(destination+'gz/'+i, destination+'../temp/'+i)
+            with gzip.open(destination+'../temp/'+i, 'rb') as f_in:
+                with open(destination+'grib/'+i[:-3], 'wb') as f_out:
+                    shutil.copyfileobj(f_in, f_out)
+                f_out.close()
+            f_in.close()
+            os.remove(destination+'../temp/'+i)
+        except:
+            print("could not process "+i)
     return filenames
 
 def stack_gribs_qpe(grib_dir='precip/qpe/grib/'):
