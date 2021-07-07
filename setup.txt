@@ -17,6 +17,9 @@ echo y|conda install -c conda-forge h5netcdf
 echo y|conda install -c conda-forge progressbar
 echo y|conda install -c conda-forge netcdf4
 echo y|conda install -c menpo wget
+echo y|conda install -c conda-forge gdal
+echo y|conda install -c conda-forge ffmpeg
+
 git clone https://github.com/mikebannis/rascontrol.git
 cd rascontrol
 pip install .
