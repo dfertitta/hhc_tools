@@ -79,7 +79,9 @@ def USGS_gage_data_request(begin_date,end_date,site_no):
 
 def USACE_gage_data_request(begin_date, end_date, site_no,rating_curve, variable="HG"):
     """downloads and processes xml data into time series"""
-    USACE_xml=urlopen("https://rivergages.mvr.usace.army.mil/watercontrol/webservices/rest/webserviceWaterML.cfc?meth=getValues&site="+site_no+"&location="+site_no+"&&variable="+variable+"&beginDate="+begin_date+"0:00&endDate="+end_date+"0:00&authToken=RiverGages&method=RGWML") 
+    print("https://rivergages.mvr.usace.army.mil/watercontrol/webservices/rest/webserviceWaterML.cfc?meth=getValues&site="+site_no+"&location="+site_no+"&&variable="+variable+"&beginDate="+begin_date+"0:00&endDate="+end_date+"0:00&authToken=RiverGages&method=RGWML")
+    USACE_xml=urlopen("https://rivergages.mvr.usace.army.mil/watercontrol/webservices/rest/webserviceWaterML.cfc?meth=getValues&site="+site_no+"&location="+site_no+"&&variable="+variable+"&beginDate="+begin_date+"0:00&endDate="+end_date+"0:00&authToken=RiverGages&method=RGWML")
+
     root = ET.parse(USACE_xml).getroot()
     dlist_usace=[]
     vlist_usace=[]
@@ -292,7 +294,14 @@ def plot_precip(data,workdir):
 
 def run_ras(path,plan=None):
     import rascontrol
-    rc = rascontrol.RasController(version='5X')
+    try:
+        rc = rascontrol.RasController(version='60')
+
+    except:
+        try:
+            rc = rascontrol.RasController(version='5X')
+        except:
+            raise
     rc.open_project(path)
     if plan == None:
         rc.run_current_plan()
