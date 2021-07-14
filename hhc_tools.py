@@ -80,7 +80,23 @@ def USGS_gage_data_request(begin_date,end_date,site_no):
 
 def USACE_gage_data_request(begin_date, end_date, site_no,rating_curve, variable="HG"):
     """downloads and processes xml data into time series"""
-    USACE_xml=urlopen("https://rivergages.mvr.usace.army.mil/watercontrol/webservices/rest/webserviceWaterML.cfc?meth=getValues&site="+site_no+"&location="+site_no+"&&variable="+variable+"&beginDate="+begin_date+"0:00&endDate="+end_date+"0:00&authToken=RiverGages&method=RGWML") 
+    import ssl
+    import urllib.request
+
+    ctx = ssl.create_default_context()
+    ctx.check_hostname = False
+    ctx.verify_mode = ssl.CERT_NONE
+    try:
+        USACE_xml=urlopen("https://rivergages.mvr.usace.army.mil/watercontrol/webservices/rest/webserviceWaterML.cfc?meth=getValues&site="+site_no+"&location="+site_no+"&&variable="+variable+"&beginDate="+begin_date+"0:00&endDate="+end_date+"0:00&authToken=RiverGages&method=RGWML")
+    except:
+        try:
+            import ssl
+            ctx = ssl.create_default_context()
+            ctx.check_hostname = False
+            ctx.verify_mode = ssl.CERT_NONE
+            USACE_xml=urlopen("https://rivergages.mvr.usace.army.mil/watercontrol/webservices/rest/webserviceWaterML.cfc?meth=getValues&site="+site_no+"&location="+site_no+"&&variable="+variable+"&beginDate="+begin_date+"0:00&endDate="+end_date+"0:00&authToken=RiverGages&method=RGWML",context=ctx)
+        except:
+            raise
     root = ET.parse(USACE_xml).getroot()
     dlist_usace=[]
     vlist_usace=[]
