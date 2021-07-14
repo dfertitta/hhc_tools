@@ -292,13 +292,7 @@ def plot_precip(data,workdir):
 
 def run_ras(path,plan=None):
     import rascontrol
-    try:
-        rc = rascontrol.RasController(version='60') 
-    except:
-        try:
-            rc = rascontrol.RasController(version='5X') 
-        except:
-            raise
+    rc = rascontrol.RasController(version='5X')
     rc.open_project(path)
     if plan == None:
         rc.run_current_plan()
@@ -355,7 +349,8 @@ def flow_gage_2_unsteady_flow_file(gage,unsteady_flow_file,bc_name):
             pass
         else:
             new_lines.append(line)
-
+            
+    new_lines[startline-1]="Interval="+ras_timestep(gage)+'\n'
     new_lines[startline]="Flow Hydrograph="+str(len(data))+'\n'
     new_lines.insert(startline+1,write_BC(data))
     with open(unsteady_flow_file, "w") as f:
@@ -367,6 +362,8 @@ def stage_gage_2_unsteady_flow_file(gage,unsteady_flow_file,bc_name):
     rawdata=np.loadtxt("gage_data\\"+gage+".csv", dtype=str, delimiter=',')
     rawdata=nan_filter(rawdata[1:,1].tolist())
     data=[float(item) for item in rawdata]
+    
+    
     
     f = open(unsteady_flow_file, "r")
     lines=f.readlines()
@@ -385,7 +382,8 @@ def stage_gage_2_unsteady_flow_file(gage,unsteady_flow_file,bc_name):
             pass
         else:
             new_lines.append(line)
-
+            
+    new_lines[startline-1]="Interval="+ras_timestep(gage)+'\n'
     new_lines[startline]="Stage Hydrograph="+str(len(data))+'\n'
     new_lines.insert(startline+1,write_BC(data))
     
@@ -718,3 +716,17 @@ def full_precip_to_hdf(qpe_path,qpf_path,hdf_path):
     times=np.append(qpe_times,qpf_times)
     pdata=build_precip_data_array(glob.glob(qpe_path+'\*grib'),qpf_files)
     write_unsteady_hdf(times,pdata,hdf_path)
+    
+def ras_timestep(gage_id):
+    ras_timestep_dict={str(360):'6MIN',
+                  str(600):'10MIN',
+                  str(900):'15MIN',
+                  str(1800):'30MIN',
+                  str(3600):'1HOUR',
+                  str(21600):'6HOUR',
+    }
+    
+    rawdata=np.loadtxt("gage_data\\"+gage_id+".csv", dtype=str, delimiter=',')
+    tstep=(datetime.datetime.strptime(rawdata[:,0][-1],'%Y-%m-%d %H:%M')
+           -datetime.datetime.strptime(rawdata[:,0][-2],'%Y-%m-%d %H:%M')).seconds
+    return ras_timestep_dict[str(tstep)]
