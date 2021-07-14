@@ -18,3 +18,5 @@ conda install -c menpo wget
 git clone https://github.com/mikebannis/rascontrol.git; 
 cd rascontrol; 
 pip install .
+
+##setx ECCODES_DEFINITION_PATH "type here the path to definition folder"

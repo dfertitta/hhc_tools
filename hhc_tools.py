@@ -586,3 +586,135 @@ def get_adcirc_time_series(latitude,longitude,fort_63_path,units='ft'):
         zeta_time=ds['zeta'][:].data[:,node_index].tolist()
     new_time=construct_adcirc_date(datetime.datetime.strptime(ds['time'].base_date, '%Y-%m-%d %H:%M:%S'),time)
     return new_time, zeta_time
+
+def extract_grib_precip_list(grib_path):
+    with xarray.open_dataset(grib_path,engine='cfgrib') as ds:
+        parsed_data=np.flip(ds.tp.data,axis=0).flatten()
+    ds.close()
+    return parsed_data
+
+def extract_grib_precip_list_qpf(grib_path):
+    return np.flip(transcribe_qpf_to_qpe_grid(grib_path),axis=0).flatten()
+
+def extract_grib_timestamp(grib_path):
+    with xarray.open_dataset(grib_path,engine='cfgrib') as ds:
+        grib_timestamp=str(ds.time.data).split("T")
+    ds.close()
+    grib_timestamp[1]=grib_timestamp[1].split(".")[0]
+    return grib_timestamp[0]+" "+grib_timestamp[1]    
+    
+def build_timestamp_list(grib_path_list):
+    timestamp_list=np.array([],dtype='|S19')
+    for path in grib_path_list:
+        timestamp_list=np.append(timestamp_list,extract_grib_timestamp(path).encode())
+    return timestamp_list
+
+def build_timestamp_list_qpf(grib_path_list):
+    timestamp_list=np.array([],dtype='|S19')
+    
+    file_times=[]
+    forecast_times=[]
+    for i in grib_path_list:
+        file_times.append(int(i[:-4].split("p06m_")[1].split("f")[0]))
+        forecast_times.append(i[:-4].split("p06m_")[1].split("f")[1])
+    file_times=list(set(file_times))
+    file_times.sort()
+    
+    base_date=datetime.datetime.strptime(str(file_times[-1]),'%Y%m%d%H')
+
+    for times in forecast_times:
+        timestamp_list=np.append(timestamp_list,(base_date+datetime.timedelta(hours=int(times))).strftime('%Y-%m-%d %H:%M:%S').encode())
+    return timestamp_list
+
+def build_precip_data_array(grib_path_list,qpf_path_list=None):
+    """this builds a cummulative rainfall time series out of the grib datasets"""
+    precip_array=np.array([],dtype="float32")
+    for path in grib_path_list:
+        if len(precip_array) == 0:
+            precip_array=np.array([np.zeros(len(extract_grib_precip_list(path)))],dtype="float32")
+        else:
+            precip_array=np.concatenate((precip_array,[extract_grib_precip_list(path)+precip_array[-1]]))
+            
+    if qpf_path_list!=None:
+        for path in qpf_path_list:
+            precip_array=np.concatenate((precip_array,[extract_grib_precip_list_qpf(path)+precip_array[-1]]))
+    
+    return precip_array
+
+def write_unsteady_hdf(timelist,precip_array,file_name):
+    shutil.copyfile('templates/event_conditions_template.hdf', file_name)
+    f1=h5py.File(file_name,'r+')
+    f1['Event Conditions']['Meteorology']['Precipitation']['Imported Raster Data']['Values'].resize(0,axis=0)
+    f1['Event Conditions']['Meteorology']['Precipitation']['Imported Raster Data']['Values'].resize(len(timelist),axis=0)
+    f1['Event Conditions']['Meteorology']['Precipitation']['Imported Raster Data']['Values'][:]=precip_array
+    f1['Event Conditions']['Meteorology']['Precipitation']['Imported Raster Data']['Values (Vertical)'].resize(0,axis=0)
+    f1['Event Conditions']['Meteorology']['Precipitation']['Imported Raster Data']['Values (Vertical)'].resize(len(timelist),axis=0)
+    f1['Event Conditions']['Meteorology']['Precipitation']['Imported Raster Data']['Values (Vertical)'][:]=precip_array
+    f1['Event Conditions']['Meteorology']['Precipitation']['Imported Raster Data']['Values'].attrs['Times']=timelist
+    f1.close()
+    
+def qpe_to_hdf(folder_path,hdf_path):
+    times=build_timestamp_list(glob.glob(folder_path+'\*grib'))
+    pdata=build_precip_data_array(glob.glob(folder_path+'\*grib'))
+    write_unsteady_hdf(times,pdata,hdf_path)
+    
+def find_recent_qpf(qpf_dir):
+    qpf_files=glob.glob(qpf_dir+'\*.grb')
+    file_times=[]
+    forecast_times=[]
+    for i in qpf_files:
+        file_times.append(int(i[:-4].split("p06m_")[1].split("f")[0]))
+        forecast_times.append(i[:-4].split("p06m_")[1].split("f")[1])
+    file_times=list(set(file_times))
+    file_times.sort()
+    forecast_times=list(set(forecast_times))
+    forecast_times.sort()
+    return file_times[-1],forecast_times,glob.glob(qpf_dir+'\\*'+str(file_times[-1])+'*.grb')
+
+def build_timestamp_list_qpf(grib_path_list):
+    timestamp_list=np.array([],dtype='|S19')
+    
+    file_times=[]
+    forecast_times=[]
+    for i in grib_path_list:
+        file_times.append(int(i[:-4].split("p06m_")[1].split("f")[0]))
+        forecast_times.append(i[:-4].split("p06m_")[1].split("f")[1])
+    file_times=list(set(file_times))
+    file_times.sort()
+    
+    base_date=datetime.datetime.strptime(str(file_times[-1]),'%Y%m%d%H')
+
+    for times in forecast_times:
+        timestamp_list=np.append(timestamp_list,
+                                 (base_date+datetime.timedelta(hours=int(times))).strftime('%Y-%m-%d %H:%M:%S').encode())
+    return timestamp_list
+
+def transcribe_qpf_to_qpe_grid(qpf_file):
+    qpe_to_qpf_map=np.loadtxt('./precip/qpe_to_qpf_map.csv')    
+    with xarray.open_dataset(qpf_file , engine='cfgrib') as qpf:
+        qpf
+    qpf_precip=qpf.tp.data.flatten()
+    forecast_on_qpe_grid=np.empty(shape=(419*419))
+    for i in range(len(forecast_on_qpe_grid)):
+        forecast_on_qpe_grid[i]=qpf_precip[int(qpe_to_qpf_map[i])]
+    qpf.close()
+    return forecast_on_qpe_grid.reshape(419, 419)
+    
+def trim_qpf_files(latest_observed_timestamp,qpf_file_list):
+    latest_qpe_time=datetime.datetime.strptime(latest_observed_timestamp,'%Y-%m-%d %H:%M:%S')
+    qpf_timestamp_list=build_timestamp_list_qpf(qpf_file_list)
+    trimmed_file_list=[]
+    for i in range(len(qpf_timestamp_list)):
+        if datetime.datetime.strptime(qpf_timestamp_list[i].decode(),'%Y-%m-%d %H:%M:%S')>latest_qpe_time:
+            trimmed_file_list.append(qpf_file_list[i])
+    return trimmed_file_list
+    
+def full_precip_to_hdf(qpe_path,qpf_path,hdf_path):
+    qpe_times=build_timestamp_list(glob.glob(qpe_path+'\*grib'))
+    qpf_files=find_recent_qpf(qpf_path)[2]  
+    qpf_files=trim_qpf_files(qpe_times[-1].decode(),qpf_files)
+    qpf_times=build_timestamp_list_qpf(qpf_files)
+    
+    times=np.append(qpe_times,qpf_times)
+    pdata=build_precip_data_array(glob.glob(qpe_path+'\*grib'),qpf_files)
+    write_unsteady_hdf(times,pdata,hdf_path)
