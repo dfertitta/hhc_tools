@@ -10,7 +10,7 @@ conda activate hhc_tools
 
 #The lines below can be placed into a batch (.bat) file and run from the hhc_tools environment.
 
-echo y|conda install jupyter
+echo y|conda install jupyter\n
 echo y|conda install numpy
 echo y|conda install scipy
 echo y|conda install ipyleaflet
