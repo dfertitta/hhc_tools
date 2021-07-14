@@ -730,3 +730,46 @@ def ras_timestep(gage_id):
     tstep=(datetime.datetime.strptime(rawdata[:,0][-1],'%Y-%m-%d %H:%M')
            -datetime.datetime.strptime(rawdata[:,0][-2],'%Y-%m-%d %H:%M')).seconds
     return ras_timestep_dict[str(tstep)]
+
+def maxele2csv(ncfile, bbox=None):
+    """Inputs:
+    ncfile = path and filename of netCDF for maxele
+    bbox = bounding box for area, [lon1, lon2, lat1, lat2], lat/lon listed respectively in ascending order. 
+    Input for bbox is optional is no box (default)."""
+    project_dir = os.path.dirname(ncfile)
+
+    sim0 = []        
+
+    surge = nc.Dataset( ncfile)
+
+    sim0.append(surge.variables['x'][:])
+    sim0.append(surge.variables['y'][:])
+    sim0.append(surge.variables['zeta_max'][:])
+
+    dum0 = np.asarray(sim0) # put into array
+
+    # Put list into dataframe
+    lonlat = pd.DataFrame(np.transpose(dum0[0:2,:]))
+
+    dum0 = np.nanmax(dum0[2:,:],axis=0) # find max of zetamax at each location for all the simulations
+    dum0[dum0 == -99999] = np.nan # set -99999 values to be NaN
+    zetamax = dum0*3.2808399 # convert to ft
+    zetamax[np.isnan(zetamax)] = -999999.
+    zetamax = pd.DataFrame(zetamax)
+
+
+    # combine the lon/lat columns with the max elevation to one dataframe
+    surgemax = pd.concat([lonlat,zetamax],axis=1) 
+    # name the columns of the dataframe for csv output
+    surgemax.columns = ['Lon','Lat','SWL'] 
+
+    if bbox == None:
+        pass
+    else:    
+        # drops the values so the comparison signs are opposite of the matlab source code
+        surgemax.drop(surgemax[surgemax['Lon'] < bbox[0]].index, inplace = True) 
+        surgemax.drop(surgemax[surgemax['Lon'] > bbox[1]].index, inplace = True)
+        surgemax.drop(surgemax[surgemax['Lat'] < bbox[2]].index, inplace = True)
+        surgemax.drop(surgemax[surgemax['Lat'] > bbox[3]].index, inplace = True)
+    
+    pd.DataFrame.to_csv(surgemax, project_dir + "\\Surgeout" + ".csv", index=False)
