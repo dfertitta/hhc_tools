@@ -78,7 +78,7 @@ def USGS_gage_data_request(begin_date,end_date,site_no):
 
     return dlist_usgs, vlist_usgs
 
-def USACE_gage_data_request(begin_date, end_date, site_no,rating_curve, variable="HG"):
+def USACE_gage_data_request(begin_date, end_date, site_no,rating_curve=None, variable="HG"):
     """downloads and processes xml data into time series"""
     import ssl
     import urllib.request
@@ -98,28 +98,50 @@ def USACE_gage_data_request(begin_date, end_date, site_no,rating_curve, variable
         except:
             raise
     root = ET.parse(USACE_xml).getroot()
+    
     dlist_usace=[]
     vlist_usace=[]
-    for value in root[1][2][:]:
-        dlist_usace.append(value.attrib["dateTime"][:-6])
-        vlist_usace.append(stage_2_flow_rating(float(value.text),rating_curve))
+    
+    if rating_curve==None:
+        dlist_usace=[]
+        vlist_usace=[]
+        
+        for value in root[1][2][:]:
+            dlist_usace.append(value.attrib["dateTime"][:-6])
+            vlist_usace.append(float(value.text))
+            
+        np.savetxt("gage_data/"+site_no+".csv", np.c_[dlist_usace,vlist_usace], fmt="%s,%s")
+    else:
+        dlist_usace=[]
+        vlist_usace=[]
+        
+        for value in root[1][2][:]:
+            dlist_usace.append(value.attrib["dateTime"][:-6])
+            vlist_usace.append(stage_2_flow_rating(float(value.text),rating_curve))
 
-    np.savetxt("gage_data/"+site_no+".csv", np.c_[dlist_usace,vlist_usace], fmt="%s,%s")
+        np.savetxt("gage_data/"+site_no+".csv", np.c_[dlist_usace,vlist_usace], fmt="%s,%s")
 
     return dlist_usace, vlist_usace
 
-def NWS_gage_data_request_forecast(site_name,site_no,rating_curve):
+def NWS_gage_data_request_forecast(site_name,site_no,rating_curve=None):
     """only forecasted stages are provided, we are converting them to flows here with our own rating curves"""
     nws_xml=urlopen("https://water.weather.gov/ahps2/hydrograph_to_xml.php?gage="+site_name+"&output=xml&time_zone=cdt") 
     root = ET.parse(nws_xml).getroot()
     dlist_nws_forecast=[]
     vlist_nws_forecast=[]
-    for type_tag in root.findall('forecast/datum'):
-        dlist_nws_forecast.append(type_tag.find('valid').text[:-15]+" "+type_tag.find('valid').text[-14:-12]+":00")
-        vlist_nws_forecast.append(stage_2_flow_rating(float(type_tag.find('primary').text),rating_curve))
+    if rating_curve==None:
+        for type_tag in root.findall('forecast/datum'):
+            dlist_nws_forecast.append(type_tag.find('valid').text[:-15]+" "+type_tag.find('valid').text[-14:-12]+":00")
+            vlist_nws_forecast.append(float(type_tag.find('primary').text))
 
-    np.savetxt("gage_data/"+site_no+"_forecast.csv", np.c_[dlist_nws_forecast,vlist_nws_forecast], fmt="%s,%s")
+        np.savetxt("gage_data/"+site_no+"_forecast.csv", np.c_[dlist_nws_forecast,vlist_nws_forecast], fmt="%s,%s")
+    else:
+        for type_tag in root.findall('forecast/datum'):
+            dlist_nws_forecast.append(type_tag.find('valid').text[:-15]+" "+type_tag.find('valid').text[-14:-12]+":00")
+            vlist_nws_forecast.append(stage_2_flow_rating(float(type_tag.find('primary').text),rating_curve))
 
+        np.savetxt("gage_data/"+site_no+"_forecast.csv", np.c_[dlist_nws_forecast,vlist_nws_forecast], fmt="%s,%s")
+        
     return dlist_nws_forecast, vlist_nws_forecast
 
         
