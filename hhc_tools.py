@@ -107,7 +107,8 @@ def USACE_gage_data_request(begin_date, end_date, site_no,rating_curve=None, var
         vlist_usace=[]
         
         for value in root[1][2][:]:
-            dlist_usace.append(value.attrib["dateTime"][:-6])
+#            dlist_usace.append(value.attrib["dateTime"][:-6])
+            dlist_usace.append(value.attrib["dateTime"][:-6].split("T")[0]+" "+value.attrib["dateTime"][:-6].split("T")[1]+":00")
             vlist_usace.append(float(value.text))
             
         np.savetxt("gage_data/"+site_no+".csv", np.c_[dlist_usace,vlist_usace], fmt="%s,%s")
@@ -116,7 +117,9 @@ def USACE_gage_data_request(begin_date, end_date, site_no,rating_curve=None, var
         vlist_usace=[]
         
         for value in root[1][2][:]:
-            dlist_usace.append(value.attrib["dateTime"][:-6])
+            
+#            dlist_usace.append(value.attrib["dateTime"][:-6])
+            dlist_usace.append(value.attrib["dateTime"][:-6].split("T")[0]+" "+value.attrib["dateTime"][:-6].split("T")[1]+":00")
             vlist_usace.append(stage_2_flow_rating(float(value.text),rating_curve))
 
         np.savetxt("gage_data/"+site_no+".csv", np.c_[dlist_usace,vlist_usace], fmt="%s,%s")
