@@ -309,13 +309,13 @@ def plot_precip(data,workdir):
 
 def run_ras(path,plan=None):
     import rascontrol
+    try:
+        rc = rascontrol.RasController(version='60')
+    except:
         try:
-            rc = rascontrol.RasController(version='60')
+            rc = rascontrol.RasController(version='5X')
         except:
-            try:
-                rc = rascontrol.RasController(version='5X')
-            except:
-                raise
+            raise
     rc.open_project(path)
     if plan == None:
         rc.run_current_plan()
