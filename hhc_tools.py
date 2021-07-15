@@ -134,13 +134,17 @@ def NWS_gage_data_request_forecast(site_name,site_no,rating_curve=None):
     vlist_nws_forecast=[]
     if rating_curve==None:
         for type_tag in root.findall('forecast/datum'):
-            dlist_nws_forecast.append(type_tag.find('valid').text[:-15]+" "+type_tag.find('valid').text[-14:-12]+":00")
+            utc_timestamp=type_tag.find('valid').text[:-15]+" "+type_tag.find('valid').text[-14:-12]+":00"
+            cst_timestamp=datetime.datetime.strptime(utc_timestamp, "%Y-%m-%d %H:%M")-datetime.timedelta(hours=6)
+            dlist_nws_forecast.append(cst_timestamp.strftime("%Y-%m-%d %H:00").strftime("%Y-%m-%d %H:00"))
             vlist_nws_forecast.append(float(type_tag.find('primary').text))
 
         np.savetxt("gage_data/"+site_no+"_forecast.csv", np.c_[dlist_nws_forecast,vlist_nws_forecast], fmt="%s,%s")
     else:
         for type_tag in root.findall('forecast/datum'):
-            dlist_nws_forecast.append(type_tag.find('valid').text[:-15]+" "+type_tag.find('valid').text[-14:-12]+":00")
+            utc_timestamp=type_tag.find('valid').text[:-15]+" "+type_tag.find('valid').text[-14:-12]+":00"
+            cst_timestamp=datetime.datetime.strptime(utc_timestamp, "%Y-%m-%d %H:%M")-datetime.timedelta(hours=6)
+            dlist_nws_forecast.append(cst_timestamp.strftime("%Y-%m-%d %H:00"))
             vlist_nws_forecast.append(stage_2_flow_rating(float(type_tag.find('primary').text),rating_curve))
 
         np.savetxt("gage_data/"+site_no+"_forecast.csv", np.c_[dlist_nws_forecast,vlist_nws_forecast], fmt="%s,%s")
