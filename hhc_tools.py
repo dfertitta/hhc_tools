@@ -359,6 +359,16 @@ def nan_filter(data):
             data[i]=data[i-1]
     return data
 
+def remove_header(raw_data):
+    if raw_data[0,0]=='Date Time':
+        return raw_data[1:,0:2]
+    else:
+        return raw_data
+    
+def clean_nans(data):
+    filtered_values=np.array(nan_filter(data[:,1].tolist()))
+    return np.stack((data[:,0], filtered_values), axis=-1)
+
 def convert_data_to_RAS_string(data):
     data=round(data,3)
     if len(str(data))>8:
@@ -825,3 +835,78 @@ def maxele2csv(ncfile, bbox=None):
         surgemax.drop(surgemax[surgemax['Lat'] > bbox[3]].index, inplace = True)
     
     pd.DataFrame.to_csv(surgemax, project_dir + "\\Surgeout" + ".csv", index=False)
+    
+def combine_obs_fcst_flow(*args,**kwargs):
+#     csv_obs = usgsgage_no + ".csv"
+#     csv_fcst = usgsgage_no + "_forecast.csv"
+
+#    obs_usgs = pd.read_csv("gage_data/" + csv_obs,header = None)
+#    fcst_usgs = pd.read_csv("gage_data/" + csv_fcst, header = None)
+
+    rawdata_obs=clean_nans(remove_header(np.loadtxt("gage_data\\"+gage+".csv", dtype=str, delimiter=',')))
+    rawdata_fcst=clean_nans(remove_header(np.loadtxt("gage_data\\"+gage+"_forecast.csv", dtype=str, delimiter=',')))
+
+    rawdata_combined=np.concatenate((rawdata_obs,rawdata_fcst), axis=0)
+
+    obs_time = mdates.date2num(rawdata_obs[:,0]) # convert to datenum format
+    obs_swl = rawdata_obs[:,1].astype(float)
+    fcst_time = mdates.date2num(rawdata_fcst[:,0])
+    # fcst_adc_time = np.array(adcirc_times)
+    fcst_swl = rawdata_fcst[:,1].astype(float)
+
+    # # Plot obs and fcst time series
+    plt.plot_date(obs_time,obs_swl)
+    plt.plot_date(fcst_time,fcst_swl)
+
+
+    # Determine length of timestep for observed and forecast
+    #     deltaT_usgs = obs_usgs_time[1] - obs_usgs_time[0] 
+    #     deltaT_fcst_usgs = fcst_usgs_time[1] - fcst_usgs_time[0]
+    deltaT_obs =mdates.num2date(obs_time[1]) - mdates.num2date(obs_time[0])
+    deltaT_fcst = mdates.num2date(fcst_time[1]) - mdates.num2date(fcst_time[0])
+
+
+    dum_newtime = mdates.num2date(fcst_time[-1]) - mdates.num2date(obs_time[0])
+
+
+    #     deltaT_min = np.min([deltaT_usgs,deltaT_fcst_usgs]) # want smaller of the two timesteps
+    deltaT_min = np.min([deltaT_obs,deltaT_fcst])
+
+    # determine the interpreted times series length
+    #     timestep_int_usgs_interp = np.round((fcst_usgs_time[-1]-obs_usgs_time[0])/deltaT_min)
+    timestep_int_interp = dum_newtime/deltaT_min
+
+    # #     tvals = np.linspace(obs_usgs_time[0],fcst_usgs_time[-1],np.int64(timestep_int_usgs_interp))
+    #     tvals = np.linspace(obs_usgs_time[0],fcst_usgs_time[-1],np.int64(dum_timestep))
+    #     fcst_usgs_interp = np.interp(tvals,fcst_usgs_time,fcst_usgs_swl)
+    tvals = np.arange(mdates.num2date(obs_time[0]), mdates.num2date(fcst_time[-1]), deltaT_min)
+    tvals = mdates.date2num(tvals)
+    fcst_interp = np.interp(tvals,fcst_time,fcst_swl)
+
+    # # Plot interpolated time series
+    plt.plot_date(obs_time,obs_swl )
+    plt.plot_date(tvals, fcst_interp, '-x')
+    plt.show()
+
+    # Combine the obs with forecast time series (but only after observed time series ends)
+    combined_time = obs_time.copy()
+    combined_swl = obs_swl.copy()
+    for i in range(0,len(tvals)):
+        if tvals[i] > obs_time[-1]:
+    #         np.append(combined_swl,i)
+            combined_time = np.append(combined_time,tvals[i])
+            combined_swl = np.append(combined_swl,fcst_interp[i])
+        else:
+            pass
+
+    # ## Plot combined time series
+    plt.plot(combined_time,combined_swl,'>',color='k')
+    # Convert time series back to datetime string format
+    combined_datetime = []
+    for k in range(0,len(combined_time)):
+        combined_datetime.append(datetime.datetime.strftime(mdates.num2date(combined_time[k]),'%Y-%m-%d %H:%M'))
+
+    # Combine time and swl time series into one dataframe
+    combined_csv = pd.DataFrame(list(zip(combined_datetime,combined_swl)))
+    # Save to CSV
+    combined_csv.to_csv('gage_data/' + gage + "_combined.csv")  
