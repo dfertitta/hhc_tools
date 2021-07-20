@@ -12,6 +12,7 @@ import os
 import shutil
 import xarray
 import matplotlib.pyplot as plt
+import matplotlib.dates as mdates
 import numpy as np
 from decimal import Decimal
 from osgeo import gdal
@@ -391,8 +392,15 @@ def write_BC(data):
     return line
 
 def flow_gage_2_unsteady_flow_file(gage,unsteady_flow_file,bc_name):   
-    rawdata=np.loadtxt("gage_data\\"+gage+".csv", dtype=str, delimiter=',')
-    data=[float(item) for item in rawdata[:,1].tolist()]
+#    rawdata=np.loadtxt("gage_data\\"+gage+".csv", dtype=str, delimiter=',')
+#    data=[float(item) for item in rawdata[:,1].tolist()]
+    try:
+        rawdata=clean_nans(remove_header(np.loadtxt("gage_data\\"+gage+"_combined.csv", dtype=str, delimiter=',')))
+    except:
+        print("Combined time series not detected, loading observed")
+        rawdata=clean_nans(remove_header(np.loadtxt("gage_data\\"+gage+".csv", dtype=str, delimiter=',')))
+        
+    data=rawdata[:,1].astype(float)
     
     f = open(unsteady_flow_file, "r")
     lines=f.readlines()
@@ -421,10 +429,17 @@ def flow_gage_2_unsteady_flow_file(gage,unsteady_flow_file,bc_name):
     f.close()
 
 def stage_gage_2_unsteady_flow_file(gage,unsteady_flow_file,bc_name):   
-    rawdata=np.loadtxt("gage_data\\"+gage+".csv", dtype=str, delimiter=',')
-    rawdata=nan_filter(rawdata[1:,1].tolist())
-    data=[float(item) for item in rawdata]
-    
+#    rawdata=np.loadtxt("gage_data\\"+gage+".csv", dtype=str, delimiter=',')
+#    rawdata=nan_filter(rawdata[1:,1].tolist())
+#    data=[float(item) for item in rawdata]
+
+    try:
+        rawdata=clean_nans(remove_header(np.loadtxt("gage_data\\"+gage+"_combined.csv", dtype=str, delimiter=',')))
+    except:
+        print("Combined time series not detected, loading observed")
+        rawdata=clean_nans(remove_header(np.loadtxt("gage_data\\"+gage+".csv", dtype=str, delimiter=',')))
+        
+    data=rawdata[:,1].astype(float)    
     
     
     f = open(unsteady_flow_file, "r")
@@ -627,7 +642,7 @@ def stage_2_flow_rating(stage,polynomial_coefficents):
 def construct_adcirc_date(base_date,time_stamps_from_nc):
     converted_ts=[]
     for time_stamp in time_stamps_from_nc:
-        converted_ts.append((base_date+datetime.timedelta(seconds=time_stamp)).strftime('%Y-%m-%d %H:%M:%S'))
+        converted_ts.append((base_date+datetime.timedelta(seconds=time_stamp)).strftime('%Y-%m-%d %H:%M'))
         
     return converted_ts
 
@@ -644,7 +659,7 @@ def get_adcirc_time_series(latitude,longitude,fort_63_path,units='ft'):
         zeta_time=zeta_time.tolist()
     else:
         zeta_time=ds['zeta'][:].data[:,node_index].tolist()
-    new_time=construct_adcirc_date(datetime.datetime.strptime(ds['time'].base_date, '%Y-%m-%d %H:%M'),time)
+    new_time=construct_adcirc_date(datetime.datetime.strptime(ds['time'].base_date, '%Y-%m-%d %H:%M:%S'),time)
     return new_time, zeta_time
 
 def extract_grib_precip_list(grib_path):
@@ -779,7 +794,7 @@ def full_precip_to_hdf(qpe_path,qpf_path,hdf_path):
     pdata=build_precip_data_array(glob.glob(qpe_path+'\*grib'),qpf_files)
     write_unsteady_hdf(times,pdata,hdf_path)
     
-def ras_timestep(gage_id):
+def ras_timestep(gage_id,forecast=False):
     ras_timestep_dict={str(360):'6MIN',
                   str(600):'10MIN',
                   str(900):'15MIN',
@@ -788,7 +803,13 @@ def ras_timestep(gage_id):
                   str(21600):'6HOUR',
     }
     
-    rawdata=np.loadtxt("gage_data\\"+gage_id+".csv", dtype=str, delimiter=',')
+    try:
+        rawdata=np.loadtxt("gage_data\\"+gage_id+"_combined.csv", dtype=str, delimiter=',')
+    except:
+        print("Combined time series not detected, loading observed")
+        rawdata=np.loadtxt("gage_data\\"+gage_id+".csv", dtype=str, delimiter=',')
+        
+    data=rawdata[:,1].astype(float)
     tstep=(datetime.datetime.strptime(rawdata[:,0][-1],'%Y-%m-%d %H:%M')
            -datetime.datetime.strptime(rawdata[:,0][-2],'%Y-%m-%d %H:%M')).seconds
     return ras_timestep_dict[str(tstep)]
@@ -836,12 +857,7 @@ def maxele2csv(ncfile, bbox=None):
     
     pd.DataFrame.to_csv(surgemax, project_dir + "\\Surgeout" + ".csv", index=False)
     
-def combine_obs_fcst_flow(*args,**kwargs):
-#     csv_obs = usgsgage_no + ".csv"
-#     csv_fcst = usgsgage_no + "_forecast.csv"
-
-#    obs_usgs = pd.read_csv("gage_data/" + csv_obs,header = None)
-#    fcst_usgs = pd.read_csv("gage_data/" + csv_fcst, header = None)
+def combine_obs_fcst_flow(gage):
 
     rawdata_obs=clean_nans(remove_header(np.loadtxt("gage_data\\"+gage+".csv", dtype=str, delimiter=',')))
     rawdata_fcst=clean_nans(remove_header(np.loadtxt("gage_data\\"+gage+"_forecast.csv", dtype=str, delimiter=',')))
@@ -884,9 +900,9 @@ def combine_obs_fcst_flow(*args,**kwargs):
     fcst_interp = np.interp(tvals,fcst_time,fcst_swl)
 
     # # Plot interpolated time series
-    plt.plot_date(obs_time,obs_swl )
-    plt.plot_date(tvals, fcst_interp, '-x')
-    plt.show()
+#    plt.plot_date(obs_time,obs_swl )
+#    plt.plot_date(tvals, fcst_interp, '-x')
+#    plt.show()
 
     # Combine the obs with forecast time series (but only after observed time series ends)
     combined_time = obs_time.copy()
@@ -900,7 +916,7 @@ def combine_obs_fcst_flow(*args,**kwargs):
             pass
 
     # ## Plot combined time series
-    plt.plot(combined_time,combined_swl,'>',color='k')
+#    plt.plot(combined_time,combined_swl,'>',color='k')
     # Convert time series back to datetime string format
     combined_datetime = []
     for k in range(0,len(combined_time)):
@@ -909,4 +925,4 @@ def combine_obs_fcst_flow(*args,**kwargs):
     # Combine time and swl time series into one dataframe
     combined_csv = pd.DataFrame(list(zip(combined_datetime,combined_swl)))
     # Save to CSV
-    combined_csv.to_csv('gage_data/' + gage + "_combined.csv")  
+    combined_csv.to_csv('gage_data/' + gage + "_combined.csv",index=False, header=False)  
