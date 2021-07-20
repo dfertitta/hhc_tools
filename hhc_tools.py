@@ -644,7 +644,7 @@ def get_adcirc_time_series(latitude,longitude,fort_63_path,units='ft'):
         zeta_time=zeta_time.tolist()
     else:
         zeta_time=ds['zeta'][:].data[:,node_index].tolist()
-    new_time=construct_adcirc_date(datetime.datetime.strptime(ds['time'].base_date, '%Y-%m-%d %H:%M:%S'),time)
+    new_time=construct_adcirc_date(datetime.datetime.strptime(ds['time'].base_date, '%Y-%m-%d %H:%M'),time)
     return new_time, zeta_time
 
 def extract_grib_precip_list(grib_path):
@@ -702,7 +702,7 @@ def build_precip_data_array(grib_path_list,qpf_path_list=None):
     return precip_array
 
 def write_unsteady_hdf(timelist,precip_array,file_name):
-    shutil.copyfile('templates/event_conditions_template.hdf', file_name)
+#    shutil.copyfile('templates/event_conditions_template.hdf', file_name)
     f1=h5py.File(file_name,'r+')
     f1['Event Conditions']['Meteorology']['Precipitation']['Imported Raster Data']['Values'].resize(0,axis=0)
     f1['Event Conditions']['Meteorology']['Precipitation']['Imported Raster Data']['Values'].resize(len(timelist),axis=0)
