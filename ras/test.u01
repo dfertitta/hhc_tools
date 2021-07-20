@@ -3,7 +3,7 @@ Program Version=6.00
 Use Restart= 0 
 Initial Storage Elev=test            ,0
 Boundary Location=                ,                ,        ,        ,                ,test            ,                ,inflow                          
-Interval=1HOUR
+Interval=15MIN
 Flow Hydrograph=192
 150000.0149000.0149000.0150000.0150000.0150000.0150000.0151000.0151000.0151000.0
 150000.0150000.0151000.0151000.0151000.0152000.0151000.0151000.0151000.0152000.0
@@ -34,7 +34,7 @@ Fixed Start Date/Time=,
 Is Critical Boundary=False
 Critical Boundary Flow=
 Boundary Location=                ,                ,        ,        ,                ,test            ,                ,outflow                         
-Interval=1HOUR
+Interval=6MIN
 Stage Hydrograph=241
    1.923   1.972   1.982   1.995   2.008   2.054   2.093   2.123   2.119    2.11
    2.096   2.103   2.119    2.11   2.057   1.991   1.936   1.929   1.982   1.991

@@ -1,4 +1,4 @@
-HEC-RAS 5.0.7 March 2019
+HEC-RAS 6.0.0 May 2021
        1       1       0       0
        0       0
        F
@@ -42,7 +42,7 @@ Job Control Information
   DSS Message Level     =        4
   Write HDF5 File       =        T
   Write DSS File        =        T
-d:\hhc_tools\ras\test.dss
+C:\Users\Haydel\Desktop\hhc_tools\ras\test.dss
 Computational Time Window
   Start Date/Time       = 31Dec2020 2400
   End Date/Time         = 01Jan2021 2400
@@ -60,7 +60,7 @@ Breach Data
        0
 Hydrograph Data
        3
-       F       F       T       F       F
+       F       F       T       F       F               F
 Upstream Flow Hydrograph
        2
        0     100    8760     100

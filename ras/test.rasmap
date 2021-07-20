@@ -2,27 +2,227 @@
   <Version>2.0.0</Version>
   <RASProjectionFilename Filename=".\Eq_Albs_USGS.prj" />
   <Features>
-    <Layer Name="Profile Lines" Type="PolylineFeatureLayer" Filename=".\Features\Profile Lines.shp">
-      <LabelFeatures Checked="True" Center="False" rows="1" cols="1" r0c0="Name" Position="3" Color="-16777216" />
-    </Layer>
+    <Layer Name="Profile Lines" Type="PolylineFeatureLayer" Filename=".\Features\Profile Lines.shp" />
   </Features>
   <Geometries Expanded="True">
-    <Layer Name="test" Type="RASGeometry" Expanded="True" Filename=".\test.g01.hdf" />
+    <Layer Name="test" Type="RASGeometry" Expanded="True" Filename=".\test.g01.hdf">
+      <Layer Type="RASXS" UnitsRiverStation="Feet" RiverStationDecimalPlaces="0" />
+      <Layer Type="StructureLayer" UnitsRiverStation="Feet" RiverStationDecimalPlaces="0" />
+      <Layer Name="Culvert Groups" Type="VirtualGeometryFeatureLayer" ParentIdentifiers="" />
+      <Layer Name="Culvert Barrels" Type="VirtualGeometryFeatureLayer" ParentIdentifiers="Bridges/Culverts" />
+      <Layer Name="Gate Groups" Type="VirtualGeometryFeatureLayer" ParentIdentifiers="" />
+      <Layer Name="Gate Openings" Type="VirtualGeometryFeatureLayer" ParentIdentifiers="Inline Structures" />
+      <Layer Name="Culvert Groups" Type="VirtualGeometryFeatureLayer" ParentIdentifiers="" />
+      <Layer Name="Culvert Barrels" Type="VirtualGeometryFeatureLayer" ParentIdentifiers="Inline Structures" />
+      <Layer Name="Rating Curve Outlets" Type="VirtualGeometryFeatureLayer" ParentIdentifiers="Inline Structures" />
+      <Layer Name="Outlet Time Series" Type="VirtualGeometryFeatureLayer" ParentIdentifiers="Inline Structures" />
+      <Layer Name="Gate Groups" Type="VirtualGeometryFeatureLayer" ParentIdentifiers="" />
+      <Layer Name="Gate Openings" Type="VirtualGeometryFeatureLayer" ParentIdentifiers="Lateral Structures" />
+      <Layer Name="Culvert Groups" Type="VirtualGeometryFeatureLayer" ParentIdentifiers="" />
+      <Layer Name="Culvert Barrels" Type="VirtualGeometryFeatureLayer" ParentIdentifiers="Lateral Structures" />
+      <Layer Name="Rating Curve Outlets" Type="VirtualGeometryFeatureLayer" ParentIdentifiers="Lateral Structures" />
+      <Layer Name="Outlet Time Series" Type="VirtualGeometryFeatureLayer" ParentIdentifiers="Lateral Structures" />
+      <Layer Name="Gate Groups" Type="VirtualGeometryFeatureLayer" ParentIdentifiers="" />
+      <Layer Name="Gate Openings" Type="VirtualGeometryFeatureLayer" ParentIdentifiers="SA/2D Connections" />
+      <Layer Name="Culvert Groups" Type="VirtualGeometryFeatureLayer" ParentIdentifiers="" />
+      <Layer Name="Culvert Barrels" Type="VirtualGeometryFeatureLayer" ParentIdentifiers="SA/2D Connections" />
+      <Layer Name="Rating Curve Outlets" Type="VirtualGeometryFeatureLayer" ParentIdentifiers="SA/2D Connections" />
+      <Layer Name="Outlet Time Series" Type="VirtualGeometryFeatureLayer" ParentIdentifiers="SA/2D Connections" />
+      <Layer Type="FinalNValueLayer">
+        <ResampleMethod>near</ResampleMethod>
+        <Surface On="True" />
+      </Layer>
+      <Layer Name="TEMP N-Value Rasterizer" Type="InterpretationRasterizerLayer">
+        <ResampleMethod>near</ResampleMethod>
+        <Surface On="True" />
+      </Layer>
+      <Layer Name="Final Values" Type="InterpretationRasterizerLayer">
+        <ResampleMethod>near</ResampleMethod>
+        <Surface On="True" />
+      </Layer>
+      <Layer Name="Final Values" Type="InterpretationRasterizerLayer">
+        <ResampleMethod>near</ResampleMethod>
+        <Surface On="True" />
+      </Layer>
+    </Layer>
+    <Layer Name="test2" Type="RASGeometry" Filename=".\test.g02.hdf">
+      <Layer Type="RASXS" UnitsRiverStation="Feet" RiverStationDecimalPlaces="0" />
+      <Layer Type="StructureLayer" UnitsRiverStation="Feet" RiverStationDecimalPlaces="0" />
+      <Layer Name="Culvert Groups" Type="VirtualGeometryFeatureLayer" ParentIdentifiers="" />
+      <Layer Name="Culvert Barrels" Type="VirtualGeometryFeatureLayer" ParentIdentifiers="Bridges/Culverts" />
+      <Layer Name="Gate Groups" Type="VirtualGeometryFeatureLayer" ParentIdentifiers="" />
+      <Layer Name="Gate Openings" Type="VirtualGeometryFeatureLayer" ParentIdentifiers="Inline Structures" />
+      <Layer Name="Culvert Groups" Type="VirtualGeometryFeatureLayer" ParentIdentifiers="" />
+      <Layer Name="Culvert Barrels" Type="VirtualGeometryFeatureLayer" ParentIdentifiers="Inline Structures" />
+      <Layer Name="Rating Curve Outlets" Type="VirtualGeometryFeatureLayer" ParentIdentifiers="Inline Structures" />
+      <Layer Name="Outlet Time Series" Type="VirtualGeometryFeatureLayer" ParentIdentifiers="Inline Structures" />
+      <Layer Name="Gate Groups" Type="VirtualGeometryFeatureLayer" ParentIdentifiers="" />
+      <Layer Name="Gate Openings" Type="VirtualGeometryFeatureLayer" ParentIdentifiers="Lateral Structures" />
+      <Layer Name="Culvert Groups" Type="VirtualGeometryFeatureLayer" ParentIdentifiers="" />
+      <Layer Name="Culvert Barrels" Type="VirtualGeometryFeatureLayer" ParentIdentifiers="Lateral Structures" />
+      <Layer Name="Rating Curve Outlets" Type="VirtualGeometryFeatureLayer" ParentIdentifiers="Lateral Structures" />
+      <Layer Name="Outlet Time Series" Type="VirtualGeometryFeatureLayer" ParentIdentifiers="Lateral Structures" />
+      <Layer Name="Gate Groups" Type="VirtualGeometryFeatureLayer" ParentIdentifiers="" />
+      <Layer Name="Gate Openings" Type="VirtualGeometryFeatureLayer" ParentIdentifiers="SA/2D Connections" />
+      <Layer Name="Culvert Groups" Type="VirtualGeometryFeatureLayer" ParentIdentifiers="" />
+      <Layer Name="Culvert Barrels" Type="VirtualGeometryFeatureLayer" ParentIdentifiers="SA/2D Connections" />
+      <Layer Name="Rating Curve Outlets" Type="VirtualGeometryFeatureLayer" ParentIdentifiers="SA/2D Connections" />
+      <Layer Name="Outlet Time Series" Type="VirtualGeometryFeatureLayer" ParentIdentifiers="SA/2D Connections" />
+      <Layer Type="FinalNValueLayer">
+        <ResampleMethod>near</ResampleMethod>
+        <Surface On="True" />
+      </Layer>
+      <Layer Name="TEMP N-Value Rasterizer" Type="InterpretationRasterizerLayer">
+        <ResampleMethod>near</ResampleMethod>
+        <Surface On="True" />
+      </Layer>
+      <Layer Name="Final Values" Type="InterpretationRasterizerLayer">
+        <ResampleMethod>near</ResampleMethod>
+        <Surface On="True" />
+      </Layer>
+      <Layer Name="Final Values" Type="InterpretationRasterizerLayer">
+        <ResampleMethod>near</ResampleMethod>
+        <Surface On="True" />
+      </Layer>
+    </Layer>
   </Geometries>
-  <Results Expanded="True" />
+  <EventConditions>
+    <Layer Name="" Type="RASEventConditions" Filename=".\test.u01.hdf" />
+    <Layer Name="" Type="RASEventConditions" Filename=".\test.u02.hdf" />
+    <Layer Name="test2" Type="RASEventConditions" Filename=".\test.u03.hdf" />
+  </EventConditions>
+  <Results Checked="True" Expanded="True">
+    <Layer Name="Plan p01" Type="RASResults" Expanded="True" Filename=".\test.p01.hdf">
+      <Layer Name="Event Conditions" Type="RASEventConditions" Filename=".\test.p01.hdf">
+        <Layer Name="Wind Layer" Type="ResultWindLayer" Filename=".\test.p01.hdf">
+          <ResampleMethod>near</ResampleMethod>
+          <Surface On="True" />
+          <Metadata BandIndex="0" SubDataset="" />
+        </Layer>
+      </Layer>
+      <Layer Type="RASGeometry" Filename=".\test.p01.hdf">
+        <Layer Type="RASXS" UnitsRiverStation="Feet" RiverStationDecimalPlaces="0" />
+        <Layer Type="StructureLayer" UnitsRiverStation="Feet" RiverStationDecimalPlaces="0" />
+        <Layer Name="Culvert Groups" Type="VirtualGeometryFeatureLayer" ParentIdentifiers="" />
+        <Layer Name="Culvert Barrels" Type="VirtualGeometryFeatureLayer" ParentIdentifiers="Bridges/Culverts" />
+        <Layer Name="Gate Groups" Type="VirtualGeometryFeatureLayer" ParentIdentifiers="" />
+        <Layer Name="Gate Openings" Type="VirtualGeometryFeatureLayer" ParentIdentifiers="Inline Structures" />
+        <Layer Name="Culvert Groups" Type="VirtualGeometryFeatureLayer" ParentIdentifiers="" />
+        <Layer Name="Culvert Barrels" Type="VirtualGeometryFeatureLayer" ParentIdentifiers="Inline Structures" />
+        <Layer Name="Rating Curve Outlets" Type="VirtualGeometryFeatureLayer" ParentIdentifiers="Inline Structures" />
+        <Layer Name="Outlet Time Series" Type="VirtualGeometryFeatureLayer" ParentIdentifiers="Inline Structures" />
+        <Layer Name="Gate Groups" Type="VirtualGeometryFeatureLayer" ParentIdentifiers="" />
+        <Layer Name="Gate Openings" Type="VirtualGeometryFeatureLayer" ParentIdentifiers="Lateral Structures" />
+        <Layer Name="Culvert Groups" Type="VirtualGeometryFeatureLayer" ParentIdentifiers="" />
+        <Layer Name="Culvert Barrels" Type="VirtualGeometryFeatureLayer" ParentIdentifiers="Lateral Structures" />
+        <Layer Name="Rating Curve Outlets" Type="VirtualGeometryFeatureLayer" ParentIdentifiers="Lateral Structures" />
+        <Layer Name="Outlet Time Series" Type="VirtualGeometryFeatureLayer" ParentIdentifiers="Lateral Structures" />
+        <Layer Name="Gate Groups" Type="VirtualGeometryFeatureLayer" ParentIdentifiers="" />
+        <Layer Name="Gate Openings" Type="VirtualGeometryFeatureLayer" ParentIdentifiers="SA/2D Connections" />
+        <Layer Name="Culvert Groups" Type="VirtualGeometryFeatureLayer" ParentIdentifiers="" />
+        <Layer Name="Culvert Barrels" Type="VirtualGeometryFeatureLayer" ParentIdentifiers="SA/2D Connections" />
+        <Layer Name="Rating Curve Outlets" Type="VirtualGeometryFeatureLayer" ParentIdentifiers="SA/2D Connections" />
+        <Layer Name="Outlet Time Series" Type="VirtualGeometryFeatureLayer" ParentIdentifiers="SA/2D Connections" />
+        <Layer Type="FinalNValueLayer">
+          <ResampleMethod>near</ResampleMethod>
+          <Surface On="True" />
+        </Layer>
+        <Layer Name="TEMP N-Value Rasterizer" Type="InterpretationRasterizerLayer">
+          <ResampleMethod>near</ResampleMethod>
+          <Surface On="True" />
+        </Layer>
+        <Layer Name="Final Values" Type="InterpretationRasterizerLayer">
+          <ResampleMethod>near</ResampleMethod>
+          <Surface On="True" />
+        </Layer>
+        <Layer Name="Final Values" Type="InterpretationRasterizerLayer">
+          <ResampleMethod>near</ResampleMethod>
+          <Surface On="True" />
+        </Layer>
+      </Layer>
+      <Layer Name="Depth" Type="RASResultsMap">
+        <MapParameters MapType="depth" ProfileIndex="2147483647" ProfileName="Max" />
+      </Layer>
+      <Layer Name="Velocity" Type="RASResultsMap">
+        <MapParameters MapType="velocity" ProfileIndex="2147483647" ProfileName="Max" />
+      </Layer>
+      <Layer Name="WSE" Type="RASResultsMap">
+        <MapParameters MapType="elevation" ProfileIndex="2147483647" ProfileName="Max" />
+      </Layer>
+    </Layer>
+    <Layer Name="plan 02" Type="RASResults" Checked="True" Expanded="True" Filename=".\test.p02.hdf">
+      <Layer Name="Event Conditions" Type="RASEventConditions" Filename=".\test.p02.hdf">
+        <Layer Name="Wind Layer" Type="ResultWindLayer" Filename=".\test.p02.hdf">
+          <ResampleMethod>near</ResampleMethod>
+          <Surface On="True" />
+          <Metadata BandIndex="0" SubDataset="" />
+        </Layer>
+      </Layer>
+      <Layer Type="RASGeometry" Filename=".\test.p02.hdf">
+        <Layer Type="RASXS" UnitsRiverStation="Feet" RiverStationDecimalPlaces="0" />
+        <Layer Type="StructureLayer" UnitsRiverStation="Feet" RiverStationDecimalPlaces="0" />
+        <Layer Name="Culvert Groups" Type="VirtualGeometryFeatureLayer" ParentIdentifiers="" />
+        <Layer Name="Culvert Barrels" Type="VirtualGeometryFeatureLayer" ParentIdentifiers="Bridges/Culverts" />
+        <Layer Name="Gate Groups" Type="VirtualGeometryFeatureLayer" ParentIdentifiers="" />
+        <Layer Name="Gate Openings" Type="VirtualGeometryFeatureLayer" ParentIdentifiers="Inline Structures" />
+        <Layer Name="Culvert Groups" Type="VirtualGeometryFeatureLayer" ParentIdentifiers="" />
+        <Layer Name="Culvert Barrels" Type="VirtualGeometryFeatureLayer" ParentIdentifiers="Inline Structures" />
+        <Layer Name="Rating Curve Outlets" Type="VirtualGeometryFeatureLayer" ParentIdentifiers="Inline Structures" />
+        <Layer Name="Outlet Time Series" Type="VirtualGeometryFeatureLayer" ParentIdentifiers="Inline Structures" />
+        <Layer Name="Gate Groups" Type="VirtualGeometryFeatureLayer" ParentIdentifiers="" />
+        <Layer Name="Gate Openings" Type="VirtualGeometryFeatureLayer" ParentIdentifiers="Lateral Structures" />
+        <Layer Name="Culvert Groups" Type="VirtualGeometryFeatureLayer" ParentIdentifiers="" />
+        <Layer Name="Culvert Barrels" Type="VirtualGeometryFeatureLayer" ParentIdentifiers="Lateral Structures" />
+        <Layer Name="Rating Curve Outlets" Type="VirtualGeometryFeatureLayer" ParentIdentifiers="Lateral Structures" />
+        <Layer Name="Outlet Time Series" Type="VirtualGeometryFeatureLayer" ParentIdentifiers="Lateral Structures" />
+        <Layer Name="Gate Groups" Type="VirtualGeometryFeatureLayer" ParentIdentifiers="" />
+        <Layer Name="Gate Openings" Type="VirtualGeometryFeatureLayer" ParentIdentifiers="SA/2D Connections" />
+        <Layer Name="Culvert Groups" Type="VirtualGeometryFeatureLayer" ParentIdentifiers="" />
+        <Layer Name="Culvert Barrels" Type="VirtualGeometryFeatureLayer" ParentIdentifiers="SA/2D Connections" />
+        <Layer Name="Rating Curve Outlets" Type="VirtualGeometryFeatureLayer" ParentIdentifiers="SA/2D Connections" />
+        <Layer Name="Outlet Time Series" Type="VirtualGeometryFeatureLayer" ParentIdentifiers="SA/2D Connections" />
+        <Layer Type="FinalNValueLayer">
+          <ResampleMethod>near</ResampleMethod>
+          <Surface On="True" />
+        </Layer>
+        <Layer Name="TEMP N-Value Rasterizer" Type="InterpretationRasterizerLayer">
+          <ResampleMethod>near</ResampleMethod>
+          <Surface On="True" />
+        </Layer>
+        <Layer Name="Final Values" Type="InterpretationRasterizerLayer">
+          <ResampleMethod>near</ResampleMethod>
+          <Surface On="True" />
+        </Layer>
+        <Layer Name="Final Values" Type="InterpretationRasterizerLayer">
+          <ResampleMethod>near</ResampleMethod>
+          <Surface On="True" />
+        </Layer>
+      </Layer>
+      <Layer Name="Depth" Type="RASResultsMap">
+        <MapParameters MapType="depth" ProfileIndex="2147483647" ProfileName="Max" />
+      </Layer>
+      <Layer Name="Velocity" Type="RASResultsMap">
+        <MapParameters MapType="velocity" ProfileIndex="2147483647" ProfileName="Max" />
+      </Layer>
+      <Layer Name="WSE" Type="RASResultsMap" Checked="True">
+        <MapParameters MapType="elevation" ProfileIndex="2147483647" ProfileName="Max" />
+      </Layer>
+    </Layer>
+  </Results>
   <MapLayers Checked="True" Expanded="True">
-    <Layer Name="Mannings_n" Type="LandCover" Checked="True" Filename=".\Mannings_n.tif">
-      <Alpha>128</Alpha>
-      <ResampleMethod>near</ResampleMethod>
-      <ColorByteMap Alpha="128" Values="0,5,3,6,4,2,13,15,1,7,12,8,14,9,10,11" Colors="-2147483648,-2145473553,-2145947062,-2135676689,-2133371859,-2142202553,-2137581831,-2144648203,-2139108583,-2141749289,-2137182728,-2133889493,-2143768742,-2132587665,-2144040562,-2131894293" />
+    <Layer Name="Mannings_n" Type="LandCoverLayer" Checked="True" Filename=".\Mannings_n.hdf" SelectedParameterForSurfaceFillLabel="ID">
+      <Symbology>
+        <ColorByteMap Type="System.Int32" Alpha="128" Values="1,2,3,4,5,6,7,8,9,10,11,12,13,14,15" Colors="-556843,-6677915,-5112049,-9332165,-11427052,-6046860,-7203021,-945777,-1064882,-14505560,-10607215,-3134927,-10625282,-5122334,-64946" ValuesExcludeLegend="" />
+      </Symbology>
+      <ColorByteMap Type="System.Int32" Alpha="128" Values="1,2,3,4,5,6,7,8,9,10,11,12,13,14,15" Colors="-556843,-6677915,-5112049,-9332165,-11427052,-6046860,-7203021,-945777,-1064882,-14505560,-10607215,-3134927,-10625282,-5122334,-64946" ValuesExcludeLegend="" />
+      <Layer Name="Classification Polygons" Type="LandCoverClassificationLayer" />
     </Layer>
   </MapLayers>
   <Terrains Checked="True" Expanded="True">
     <Layer Name="Terrain" Type="TerrainLayer" Checked="True" Filename=".\Terrain\Terrain.hdf">
       <Symbology>
-        <SurfaceFill Colors="-10039894,-256,-16744448,-23296,-7667712,-5952982,-8355712,-1286" Values="-7727.09375,-72.3625792979747,-23.0228681817304,-6.52265551546816,17.1235053786296,64.6368764015132,183.881717967748,554.9375" Stretched="True" RegenerateForScreen="False" />
+        <SurfaceFill Colors="-10039894,-256,-16744448,-23296,-7667712,-5952982,-8355712,-1286" Values="-7727.09375,-72.3625792979747,-23.0228681817304,-6.52265551546816,17.1235053786296,64.6368764015132,183.881717967748,554.9375" Stretched="True" AlphaTag="255" UseDatasetMinMax="False" RegenerateForScreen="False" />
       </Symbology>
-      <Alpha>255</Alpha>
       <ResampleMethod>near</ResampleMethod>
       <Surface On="True" />
     </Layer>
@@ -40,6 +240,7 @@
     <Method>2</Method>
     <Timestep>1</Timestep>
     <StaticColor>Black</StaticColor>
+    <SpeedRelativeToZoom>False</SpeedRelativeToZoom>
   </VelocitySettings>
   <AnimationSettings>
     <DelayTimer>0</DelayTimer>
